@@ -35,17 +35,25 @@ func (ptd PageTemplateData) Template(relPath string, data interface{}) (string, 
 }
 
 // Generate sitemap
-func (ptd PageTemplateData) Sitemap(glob string) (html string) {
+func (ptd PageTemplateData) Sitemap(pattern string) (html string) {
 	// TODO Sorting and filtering
 	// TODO Use template, allowing template to be replaced by user
 	html += "\n<ul class=\"sitemap\">\n"
 	for _, page := range ptd.page.site.Pages {
+		if pattern != "" {
+			if match, err := path.Match(pattern, page.PublicPath); err != nil {
+				panic(err)
+			} else if !match {
+				continue
+			}
+		}
+
 		class := ""
-		if page.TargetRelPath == ptd.page.TargetRelPath {
+		if page.PublicPath == ptd.page.PublicPath {
 			class = `class="active"`
 		}
 		html += fmt.Sprintf("<li><a %s href=\"%s\">%s</a></li>\n",
-			class, ptd.RelPath(page.TargetRelPath), page.Meta.Title)
+			class, ptd.RelPath(page.PublicPath), page.Meta.Title)
 	}
 	html += "</ul>\n"
 
