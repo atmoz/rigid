@@ -18,6 +18,7 @@ type Page struct {
 
 	SourceRelPath string
 	TargetRelPath string
+	PublicPath string
 
 	Meta PageMeta
 }
@@ -30,13 +31,17 @@ func (p *Page) Init(site *Site, filePath string) (err error) {
 		return err
 	}
 
+	var prettyPath bool
+
 	// Determine target file path
 	var targetFilePath string
 	regexpExt := regexp.MustCompile(path.Ext(filePath) + "$")
 	strippedName := regexpExt.ReplaceAllString(filePath, "")
 	if path.Ext(strippedName) == ".html" {
+		prettyPath = false
 		targetFilePath = strippedName
 	} else {
+		prettyPath = true
 		targetFilePath = regexpExt.ReplaceAllString(
 			filePath, string(os.PathSeparator) + "index.html")
 	}
@@ -44,6 +49,12 @@ func (p *Page) Init(site *Site, filePath string) (err error) {
 	p.TargetRelPath, err = filepath.Rel(site.SourceDirPath, targetFilePath)
 	if err != nil {
 		return err
+	}
+
+	if prettyPath {
+		p.PublicPath = path.Dir(p.TargetRelPath)
+	} else {
+		p.PublicPath = p.TargetRelPath
 	}
 
 	if err = p.Meta.ReadFromFile(filePath); err != nil {
