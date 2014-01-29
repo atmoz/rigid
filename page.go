@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"os"
 	"io/ioutil"
-	"text/template"
 	"github.com/atmoz/rigid/fileutil"
 	"launchpad.net/goyaml"
 	"github.com/russross/blackfriday"
@@ -119,15 +118,13 @@ func (p *Page) renderTemplate(content []byte) ([]byte, error) {
 
 	data := PageTemplateData{
 		page: *p,
-		Page: PageData{Path: p.TargetRelPath, Meta: p.Meta},
 		Content: string(content),
 	}
-
-	funcMap := data.getTemplateFuncMap()
+	data.Init()
 
 	// Override default directory templates
 	if p.Meta.Template != "" {
-		content, err := p.executeTemplate(p.Meta.Template, data, funcMap)
+		content, err := p.executeTemplate(p.Meta.Template, data)
 		if err != nil {
 			return nil, err
 		}
@@ -143,7 +140,7 @@ func (p *Page) renderTemplate(content []byte) ([]byte, error) {
 	for _, templatePath := range templateFiles {
 		data.Content = string(content)
 
-		content, err = p.executeTemplate(templatePath, data, funcMap)
+		content, err = p.executeTemplate(templatePath, data)
 		if err != nil {
 			return nil, err
 		}
@@ -152,7 +149,7 @@ func (p *Page) renderTemplate(content []byte) ([]byte, error) {
 	return content, nil
 }
 
-func (p *Page) executeTemplate(templatePath string, data interface{}, funcMap template.FuncMap) ([]byte, error) {
+func (p *Page) executeTemplate(templatePath string, data interface{}) ([]byte, error) {
 	var err error
 	if !path.IsAbs(templatePath) {
 		templatePath = path.Join(p.site.SourceDirPath, path.Dir(p.SourceRelPath), templatePath)
@@ -167,11 +164,8 @@ func (p *Page) executeTemplate(templatePath string, data interface{}, funcMap te
 		templatePath = "//" + templatePath
 	}
 
-	t := p.site.Template
-	t.Funcs(funcMap)
-
 	contentBuffer := bytes.NewBufferString("")
-	err = t.ExecuteTemplate(contentBuffer, templatePath, data)
+	err = p.site.Template.ExecuteTemplate(contentBuffer, templatePath, data)
 	if err != nil {
 		return nil, err
 	}

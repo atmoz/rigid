@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"path"
 	"path/filepath"
-	"text/template"
 )
 
 type PageData struct {
@@ -18,15 +17,16 @@ type PageTemplateData struct {
 	Content string
 }
 
-func (ptd *PageTemplateData) getTemplateFuncMap() template.FuncMap {
-	// TODO Add helper funcitons
-	return template.FuncMap{}
+func (ptd *PageTemplateData) Init() {
+	ptd.Page = PageData{
+		Path: ptd.page.PublicPath,
+		Meta: ptd.page.Meta,
+	}
 }
 
 // Execute template
 func (ptd PageTemplateData) Template(relPath string, data interface{}) (string, error) {
-	result, err := ptd.page.executeTemplate(
-		relPath, data, ptd.getTemplateFuncMap())
+	result, err := ptd.page.executeTemplate(relPath, data)
 	if err != nil {
 		return "", err
 	}
