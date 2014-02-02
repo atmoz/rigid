@@ -23,11 +23,6 @@ func main() {
 	site.TemplateRegexpPattern = `\.template$`
 	site.PageRegexpPattern = `\.(?:md|markdown|html)$`
 
-	// TEST DATA
-	site.Verbose = true
-	site.SourceDirPath = "/home/atmoz/workspace/blog"
-	site.TargetDirPath = "/home/atmoz/workspace/blog/_output"
-
 	// Create temp dir
 	tempDir, err := ioutil.TempDir("", "rigid-")
 	if err != nil {
