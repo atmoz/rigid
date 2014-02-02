@@ -31,6 +31,20 @@ This is in heavy development, PREPARE YOUR SOUL!
     * Sitemap(pattern): Print unordered list of files matching pattern.
     * TaggedPages(pattern): Return array of pages with tags matching pattern.
 
+## Example file structure
+
+    posts/
+        _partial.template
+        programming/
+            _current.template
+            some-post.md
+        music
+            _current.template
+            another-post.md
+    _final.template
+    style.css
+    index.html
+
 ## Example page
 
     ---
