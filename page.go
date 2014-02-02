@@ -203,12 +203,16 @@ func (pm *PageMeta) ReadFromFile(filePath string) error {
 
 	if pm.Title == "" {
 		pm.Title = path.Base(filePath)
-		// TODO Try getting title from the file
-		// http://golang-examples.tumblr.com/post/47426518779/parse-html
-		// http://godoc.org/code.google.com/p/go.net/html
-		//if content, err := pm.page.applyMarkup(rest); err != nil {
-		//	return err
-		//}
+		for {
+			if path.Ext(pm.Title) == "" {
+				break;
+			}
+			pm.Title = strings.TrimSuffix(pm.Title, path.Ext(pm.Title))
+		}
+
+		pm.Title = strings.Replace(pm.Title, "-", " ", -1)
+		pm.Title = strings.Replace(pm.Title, "_", " ", -1)
+		pm.Title = strings.Title(pm.Title)
 	}
 
 	return nil
