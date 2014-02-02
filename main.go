@@ -5,23 +5,35 @@ import (
 	"flag"
 	"os"
 	"io/ioutil"
+	"path/filepath"
 	"github.com/atmoz/rigid/fileutil"
 )
 
 func main() {
+	var err error
 	var site Site
 
 	exit := func() {
 		os.Exit(1)
 	}
 
-	flag.BoolVar(&site.Verbose, "verbose", false, "Verbose output")
+	flag.BoolVar(&site.Verbose, "verbose", true, "Verbose output")
 	flag.StringVar(&site.SourceDirPath, "source", ".", "Source dir")
 	flag.StringVar(&site.TargetDirPath, "target", "./_output", "Target dir")
 	flag.Parse()
 
 	site.TemplateRegexpPattern = `\.template$`
 	site.PageRegexpPattern = `\.(?:md|markdown|html)$`
+
+	// Make paths absolute
+	site.SourceDirPath, err = filepath.Abs(site.SourceDirPath)
+	if err != nil {
+		fmt.Println(err)
+	}
+	site.TargetDirPath, err = filepath.Abs(site.TargetDirPath)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Create temp dir
 	tempDir, err := ioutil.TempDir("", "rigid-")
@@ -55,7 +67,7 @@ func main() {
 		//site.Log(page.SourceRelPath, "-->", page.TargetRelPath)
 	}
 
-	site.Log("\nCopy files to target dir:", site.TargetDirPath)
+	site.Log("\nCopying files to target dir:", site.TargetDirPath)
 
 	if site.TargetDirPath != site.SourceDirPath {
 		// Delete old target dir
@@ -96,5 +108,5 @@ func main() {
 		exit()
 	}
 	
-
+	site.Log("\nDone.")
 }

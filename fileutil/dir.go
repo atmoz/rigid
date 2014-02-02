@@ -204,7 +204,6 @@ func CopyDirectory(fromDir, toDir string, filter FileFilter) error {
 				return err
 			}
 		} else {
-			fmt.Println("--", fromFile)
 			err = CopyFile(fromFile, toFile)
 			if err != nil {
 				return err
