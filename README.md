@@ -31,6 +31,15 @@ This is in heavy development, PREPARE YOUR SOUL!
     * Sitemap(pattern): Print unordered list of files matching pattern.
     * TaggedPages(pattern): Return array of pages with tags matching pattern.
 
+## Example page
+
+    ---
+    title: My FANCY title, indeed
+    tags: [ blog/fancy, blog/example, whatever ]
+    ---
+
+    So this is my page, you like!?
+
 ## Example template
 
     <h1>{{.Page.Meta.Title}}</h1>
