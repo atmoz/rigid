@@ -96,8 +96,8 @@ func (p *Page) Build(rootDirPath string) error {
 		return err
 	}
 
-	// Apply markup
-	if content, err = p.applyMarkup(content); err != nil {
+	// Render markup
+	if content, err = p.renderMarkup(content); err != nil {
 		return err
 	}
 
@@ -113,7 +113,7 @@ func (p *Page) Build(rootDirPath string) error {
 	return ioutil.WriteFile(targetAbsFilePath, content, info.Mode())
 }
 
-func (p *Page) applyMarkup(content []byte) ([]byte, error) {
+func (p *Page) renderMarkup(content []byte) ([]byte, error) {
 	switch path.Ext(p.SourceRelPath) {
 	case ".md", ".markdown":
 		content = blackfriday.MarkdownCommon(content)
