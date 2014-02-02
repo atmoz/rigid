@@ -16,14 +16,14 @@ This is in heavy development, prepare your soul!
 
 * Structure your files just like you want the site to be structured.
 * html, md, and markdown file extensions are regarded as "pages".
-* Add some meta data to your pages with [https://en.wikipedia.org/wiki/YAML](YAML), if you want.
+* Add some meta data to your pages with [YAML](https://en.wikipedia.org/wiki/YAML), if you want.
     * title
     * tags
 * Expect this to happen to your pages:
     * projects.md --> projects/index.html (pretty URL!)
     * boring.html.md --> boring.html (boring URL)
     * about.html --> about.html (html is boring by default)
-* Pages inherits special [http://golang.org/pkg/text/template/](go templates) based on directory location:
+* Pages inherits special [go templates](http://golang.org/pkg/text/template/) based on directory location:
     * `_current.template`: only current dir.
     * `_partial.template`: current dir and parent and child dirs.
     * `_final.template`: current dir and only child dirs.
