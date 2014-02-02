@@ -60,6 +60,26 @@ func (ptd PageTemplateData) Sitemap(pattern string) (html string) {
 	return
 }
 
+// Generate sitemap
+func (ptd PageTemplateData) TaggedPages(pattern string) (pages []Page) {
+	// TODO Sorting and filtering
+	forPages:
+	for _, page := range ptd.page.site.Pages {
+		if pattern != "" {
+			for _, tag := range page.Meta.Tags {
+				if match, err := path.Match(pattern, tag); err != nil {
+					panic(err)
+				} else if match {
+					pages = append(pages, page)
+					continue forPages
+				}
+			}
+		}
+	}
+
+	return
+}
+
 // Make sure path is relative to site root, from current page position
 func (ptd PageTemplateData) RelPath(filePath string) string {
 	filePath, err := filepath.Rel(path.Dir(ptd.page.TargetRelPath), filePath)
