@@ -2,7 +2,7 @@
 
 Static web sites that makes sense.
 
-This is in heavy development, prepare your soul!
+This is in heavy development, PREPARE YOUR SOUL!
 
 ## What?
 
@@ -30,3 +30,20 @@ This is in heavy development, prepare your soul!
 * Template functions (experimental):
     * Sitemap(pattern): Print unordered list of files matching pattern.
     * TaggedPages(pattern): Return array of pages with tags matching pattern.
+
+## Example template
+
+    <h1>{{.Page.Meta.Title}}</h1>
+    <article>
+        {{.Content}}
+
+        <p>This page is tagged: {{range .Page.Meta.Tags}}<span>{{.}}</span> {{end}}</p>
+    </article>
+
+    <h2>All blog posts:</h2>
+    <ul>
+    {{range .TaggedPages "blog/*"}}
+        <li><a href="{{.PublicPath}}">{{.Meta.Title}}</a></li>
+    {{end}}
+    </ul>
+
