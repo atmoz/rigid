@@ -15,7 +15,6 @@ func ReadMetaData(filePath string, removeMeta bool) ([]byte, []byte, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	defer file.Close()
 
 	var lineNum int
 	var meta []byte
