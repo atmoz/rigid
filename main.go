@@ -13,7 +13,8 @@ func main() {
 	var err error
 	var site Site
 
-	exit := func() {
+	fail := func(a ...interface{}) {
+		fmt.Println(a...)
 		os.Exit(1)
 	}
 
@@ -28,40 +29,36 @@ func main() {
 	// Make paths absolute
 	site.SourceDirPath, err = filepath.Abs(site.SourceDirPath)
 	if err != nil {
-		fmt.Println(err)
+		fail(err)
 	}
 	site.TargetDirPath, err = filepath.Abs(site.TargetDirPath)
 	if err != nil {
-		fmt.Println(err)
+		fail(err)
 	}
 
 	// Create temp dir
 	tempDir, err := ioutil.TempDir("", "rigid-")
 	if err != nil {
-		fmt.Println(err)
-		exit()
+		fail(err)
 	}
 
 	// Remove temp dir when done
 	defer os.RemoveAll(tempDir)
-	exit = func() {
+	fail = func(a ...interface{}) {
+		fmt.Println(a...)
 		os.RemoveAll(tempDir)
 		os.Exit(1)
 	}
 
-	site.Log("Created temp dir:", tempDir)
-
 	site.Log("\nScanning dir:", site.SourceDirPath)
 	if err := site.ScanDir(site.SourceDirPath, true); err != nil {
-		fmt.Println(err)
-		exit()
+		fail(err)
 	}
 
 	site.Log("\nBuilding pages")
 	for _, page := range site.Pages {
 		if err := page.Build(tempDir); err != nil {
-			fmt.Println(err)
-			exit()
+			fail(err)
 		}
 		site.Log(" + ", page.TargetRelPath)
 		//site.Log(page.SourceRelPath, "-->", page.TargetRelPath)
@@ -78,8 +75,7 @@ func main() {
 
 		// Create new target dir
 		if err = os.MkdirAll(site.TargetDirPath, os.FileMode(0755)); err != nil {
-			fmt.Println(err)
-			exit()
+			fail(err)
 		}
 
 		// Copy normal files to target dir
@@ -95,8 +91,7 @@ func main() {
 		}
 		err = fileutil.CopyDirectory(site.SourceDirPath, site.TargetDirPath, filter)
 		if err != nil {
-			fmt.Println(err)
-			exit()
+			fail(err)
 		}
 	}
 
@@ -104,8 +99,7 @@ func main() {
 	filter := fileutil.FileFilter{}
 	err = fileutil.CopyDirectory(tempDir, site.TargetDirPath, filter)
 	if err != nil {
-		fmt.Println(err)
-		exit()
+		fail(err)
 	}
 	
 	site.Log("\nDone.")

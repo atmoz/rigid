@@ -8,7 +8,7 @@ import (
 )
 
 // Read meta data from file (if any)
-// If removeRest is true, meta data is also removed from the file
+// If removeMeta is true, meta data is also removed from the file
 // Returns meta data and the rest of the file content
 func ReadMetaData(filePath string, removeMeta bool) ([]byte, []byte, error) {
 	file, err := os.Open(filePath)
