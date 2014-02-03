@@ -23,10 +23,10 @@ This is in heavy development, PREPARE YOUR SOUL!
     * projects.md --> projects/index.html (pretty URL!)
     * boring.html.md --> boring.html (boring URL)
     * about.html --> about.html (html is boring by default)
-* Pages inherits special [go templates](http://golang.org/pkg/text/template/) based on directory location:
-    * `_current.template`: only current dir.
-    * `_partial.template`: current dir and parent and child dirs.
-    * `_final.template`: current dir and only child dirs.
+* Pages inherits these [go templates](http://golang.org/pkg/text/template/) based on directory location:
+    * `_current.template`: only in current dir.
+    * `_partial.template`: current dir, traverse parent and child dirs.
+    * `_final.template`: current dir and only traverse child dirs.
 * Template functions (experimental):
     * Sitemap(pattern): Print unordered list of files matching pattern.
     * TaggedPages(pattern): Return array of pages with tags matching pattern.
@@ -38,12 +38,30 @@ This is in heavy development, PREPARE YOUR SOUL!
         programming/
             _current.template
             some-post.md
-        music
+        music/
+            playlists/
+                jazz.md
             _current.template
             another-post.md
     _final.template
     style.css
     index.html
+
+Templates are applied to pages is this order:
+
+* posts/programming/some-post.md
+    * posts/programming/\_current.template
+    * posts/\_partial.template
+    * \_final.template
+* posts/music/playlist/jazz.md
+    * posts/\_partial.template
+    * \_final.template
+* posts/music/another-post.md
+    * posts/music/\_current.template
+    * posts/\_partial.template
+    * \_final.template
+* index.html
+    * \_final.template
 
 ## Example page
 
