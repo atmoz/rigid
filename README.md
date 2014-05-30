@@ -1,78 +1,48 @@
 # Rigid
 
-Static web sites that makes sense.
+Static web sites that just makes sense.
 
-This is in heavy development, PREPARE YOUR SOUL!
+This is still in early development, PREPARE YOUR SOUL!
 
 ## What?
 
-* Simple
-* Fast
 * Zero configuration
-* Templates
-* Markdown
+* Default and custom templates
+* Markdown support
 
 ## How?
 
-* Structure your files just like you want the site to be structured.
-* html, md, and markdown file extensions are regarded as "pages".
-* Add some meta data to your pages with [YAML](https://en.wikipedia.org/wiki/YAML), if you want.
-    * title
-    * tags
-* Expect this to happen to your pages:
+* Structure your files just like you want the web site to be structured.
+* HTML and markdown files are regarded as web pages.
+* Web page paths:
     * projects.md --> projects/index.html (pretty URL!)
     * boring.html.md --> boring.html (boring URL)
     * about.html --> about.html (html is boring by default)
-* Pages inherits these [go templates](http://golang.org/pkg/text/template/) based on directory location:
-    * `_current.template`: only in current dir.
-    * `_partial.template`: current dir, traverse parent and child dirs.
-    * `_final.template`: current dir and only traverse child dirs.
-* Template functions (experimental):
-    * Sitemap(pattern): Print unordered list of files matching pattern.
-    * TaggedPages(pattern): Return array of pages with tags matching pattern.
+* Web site is rendered with a simple menu, ready to use.
+* *Optional:*
+    * Add meta data to your pages.
+    * Use custom CSS and templates.
 
-## Example file structure
-
-    posts/
-        _partial.template
-        programming/
-            _current.template
-            some-post.md
-        music/
-            playlists/
-                jazz.md
-            _current.template
-            another-post.md
-    _final.template
-    style.css
-    index.html
-
-Templates are applied to pages is this order:
-
-* posts/programming/some-post.md
-    * posts/programming/\_current.template
-    * posts/\_partial.template
-    * \_final.template
-* posts/music/playlist/jazz.md
-    * posts/\_partial.template
-    * \_final.template
-* posts/music/another-post.md
-    * posts/music/\_current.template
-    * posts/\_partial.template
-    * \_final.template
-* index.html
-    * \_final.template
-
-## Example page
+## Example page with meta data
 
     ---
-    title: My FANCY title, indeed
-    tags: [ blog/fancy, blog/example, whatever ]
+    title: My title
+    tags: [ blog/ramblings, blog/example, whatever ]
     ---
 
     So this is my page, you like!?
 
-## Example template
+## Using custom CSS and templates
+
+If you don't like the default look, you can add your own CSS and/or templates.
+
+### CSS
+
+All you need is to edit `rigid.css` (created on first build) in the root folder.
+
+### Templates
+
+*More info coming later*
 
     <h1>{{.Page.Meta.Title}}</h1>
     <article>
