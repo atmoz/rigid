@@ -22,19 +22,19 @@ type Site struct {
 	Pages []Page
 }
 
-func (s *Site) Clean() {
-	s.Template = *template.New("templates")
-	s.Pages = make([]Page, 0)
+func (site *Site) Clean() {
+	site.Template = *template.New("templates")
+	site.Pages = make([]Page, 0)
 }
 
-func (s *Site) Log(a ...interface{}) {
-	if s.Verbose {
+func (site *Site) Log(a ...interface{}) {
+	if site.Verbose {
 		fmt.Println(a...)
 	}
 }
 
 // Scan dir and init supported files
-func (s *Site) ScanDir(dirPath string, recursive bool) error {
+func (site *Site) ScanDir(dirPath string, recursive bool) error {
 	files, err := ioutil.ReadDir(dirPath)
 	if err != nil {
 		return err
@@ -42,6 +42,8 @@ func (s *Site) ScanDir(dirPath string, recursive bool) error {
 
 	// Scan
 	for _, fileinfo := range files {
+		// @todo Use ignore list from config
+
 		// Ignore hidden dirs (files are okay, like .htaccess)
 		if fileinfo.IsDir() && strings.HasPrefix(fileinfo.Name(), ".") {
 			continue
@@ -60,48 +62,48 @@ func (s *Site) ScanDir(dirPath string, recursive bool) error {
 		}
 
 		// Get path relative to source dir
-		relFilePath, err := filepath.Rel(s.SourceDirPath, absFilePath)
+		relFilePath, err := filepath.Rel(site.SourceDirPath, absFilePath)
 		if err != nil {
 			return err
 		}
 
 		// Ignore target dir
-		if absFilePath == s.TargetDirPath {
+		if absFilePath == site.TargetDirPath {
 			continue
 		}
 
 		if recursive && fileinfo.IsDir() {
-			if err := s.ScanDir(absFilePath, true); err != nil {
+			if err := site.ScanDir(absFilePath, true); err != nil {
 				return err
 			}
 			continue
 		}
 
 		// Parse templates
-		if match, _ := regexp.MatchString(s.TemplateRegexpPattern, fileinfo.Name()); match {
+		if match, _ := regexp.MatchString(site.TemplateRegexpPattern, fileinfo.Name()); match {
 			templateContent, err := ioutil.ReadFile(absFilePath)
 			if err != nil {
 				return err
 			}
 
-			_, err = s.Template.New("//" + relFilePath).Parse(string(templateContent))
+			_, err = site.Template.New("//" + relFilePath).Parse(string(templateContent))
 			if err != nil {
 				return err
 			}
 
-			s.Log(" T ", relFilePath)
+			site.Log(" T ", relFilePath)
 		}
 
 		// Init pages
-		if match, _ := regexp.MatchString(s.PageRegexpPattern, fileinfo.Name()); match {
+		if match, _ := regexp.MatchString(site.PageRegexpPattern, fileinfo.Name()); match {
 
 			var page Page
-			if err := page.Init(s, absFilePath); err != nil {
+			if err := page.Init(site, absFilePath); err != nil {
 				return err
 			}
 
-			s.Pages = append(s.Pages, page)
-			s.Log(" P ", relFilePath)
+			site.Pages = append(site.Pages, page)
+			site.Log(" P ", relFilePath)
 		}
 
 	}

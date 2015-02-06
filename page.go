@@ -9,7 +9,7 @@ import (
 	"os"
 	"io/ioutil"
 	"github.com/atmoz/rigid/fileutil"
-	"launchpad.net/goyaml"
+	"gopkg.in/yaml.v2"
 	"github.com/russross/blackfriday"
 )
 
@@ -197,7 +197,7 @@ func (pm *PageMeta) ReadFromFile(filePath string) error {
 		return err
 	}
 
-	if err := goyaml.Unmarshal(meta, &pm); err != nil {
+	if err := yaml.Unmarshal(meta, &pm); err != nil {
 		return err
 	}
 
